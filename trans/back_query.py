@@ -4,6 +4,8 @@ from qlib.net import to
 from qlib.log import LogControl as L
 from qlib.asyn.daemon import run,restart, stop
 
+import time,threading
+
 host = 'fanyi.baidu.com/v2transapi'
 data_tem = {
     'from': 'auto',
@@ -23,6 +25,45 @@ def read_msg():
 
 
 # msg = ' '.join(sys.argv[1:])
+class Clip(threading.Thread):
+    def __init__(self, root,text):
+        self.root_ui = root
+        self.text = text
+        super(Clip, self).__init__()
+
+    def run(self):
+        sleep(2)
+        self.root_ui
+        old = ''
+        while 1:
+            sleep(1)
+            try:
+                msg = self.root_ui.clipboard_get()
+                if msg == old:
+                    continue
+                else:
+                    old = msg
+            except RuntimeError:
+                break
+            data_tem['query'] = msg
+            res = to(host, method='post',data=data_tem)
+            for data in res.json()['trans_result']['data']:
+                L.i(data['dst'])
+                self.text.insert(0.0, data['dst']+"\n")
+                self.text.pack()
+
+def urun():
+    try:
+        from Tkinter import Tk,Text
+    except ImportError:
+        from tkinter import Tk,Text
+    root = Tk()
+    text = Text(root)
+    text.pack()
+    c = Clip(root, text)
+    c.start()
+    root.mainloop()
+    
 
 
 def brun():

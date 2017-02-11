@@ -16,8 +16,8 @@ import sys
 
 # db engine 
 # db_engine = pymongo.Connection()['local']
-db_connect_cmd = r'database="/Users/darkh/Desktop/db.sql"'
-db_engine = SqlEngine(database="/Users/darkh/Desktop/db.sql")
+db_connect_cmd = r'database="db.sql"'
+db_engine = SqlEngine(database="db.sql")
 
 
 # static path 

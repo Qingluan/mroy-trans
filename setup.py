@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 
 setup(name='mroy-trans',
-    version='0.3',
+    version='0.7',
     description='a simple way to use mongo db, let db like dict',
     url='https://github.com/Qingluan/mroy-trans.git',
     author='Qing luan',

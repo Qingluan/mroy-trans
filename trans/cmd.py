@@ -1,5 +1,5 @@
 import sys,argparse,os
-from trans.back_query import  brun,srun
+from trans.back_query import  brun,srun,urun
 from trans.Trans.main import main as mainServer
 from qlib.asyn.daemon import run, restart, stop
 
@@ -14,6 +14,7 @@ def get_args():
     parser.add_argument("-s", "--start", default=False, action="store_true",help="set start")
     parser.add_argument("-k", "--stop", default=False,  action="store_true",help="set stop")
     parser.add_argument("-m", "--mac", default=False, action="store_true", help="set mac mode.")
+    parser.add_argument("-w", "--win", default=False, action="store_true", help="set win mode.")
     # parser.add_argument("-r", "--restart", default=False, action="store_true", help="set restart")
     parser.add_argument("-S", "--Server", default=False, action="store_true", help="set restart")
 
@@ -23,16 +24,28 @@ def get_args():
 def main():
     args = get_args()
     if args.stop:
-        stop(brun)
-        stop(srun)
-    elif args.Server:
-        os.popen("sudo Translate -s").read()
-        try:
-            mainServer()
-        except (InterruptedError, KeyboardInterrupt) as p:
+        if sys.platform != "darwin":
+            pass
+
+        else:
+            stop(brun)
             stop(srun)
+    elif args.Server:
+        if sys.platform != "darwin":
+            pass
+        else:
+            os.popen("sudo Translate -s").read()
+            try:
+                mainServer()
+            except (InterruptedError, KeyboardInterrupt) as p:
+                stop(srun)
 
     elif args.mac:
         run(brun)
+    elif args.win:
+        urun()
     elif args.start:
-        run(srun)
+        if sys.platform != "darwin":
+            urun()
+        else:
+            run(srun)
